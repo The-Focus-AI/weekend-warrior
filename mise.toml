@@ -1,0 +1,19 @@
+[tools]
+node = "latest"
+"npm:@anthropic-ai/claude-code" = "latest"
+
+[tasks.build-site]
+description = "Build site from a git repo with optional base path"
+usage = '''
+arg "<git_path>" help="Git repository URL or local path"
+arg "[base]" help="Base directory prefix for the site (e.g., /my-project/)" default="/"
+'''
+run = """
+#!/usr/bin/env bash
+set -e
+if [ -n "$usage_base" ] && [ "$usage_base" != "/" ]; then
+  npx tsx scripts/build-site.ts "$usage_git_path" --base "$usage_base"
+else
+  npx tsx scripts/build-site.ts "$usage_git_path"
+fi
+"""

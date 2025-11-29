@@ -1,6 +1,12 @@
 {
   "title": "Weekend Coding Agent",
-  "repoPath": "../../weekend-coding-agent",
+  "description": "Build an AI coding assistant step by step.",
+  "repoName": "weekend-coding-agent",
+  "repoPath": "/Users/wschenk/The-Focus-AI/weekend-coding-agent",
+  "repoUrl": "https://github.com/The-Focus-AI/weekend-coding-agent.git",
+  "startDate": "2025-11-28",
+  "lastDate": "2025-11-29",
+  "docNumber": "WCA-2025",
   "steps": [
     {
       "id": "0",
@@ -76,10 +82,34 @@
     },
     {
       "id": "9",
-      "title": "Implement and test slash commands",
-      "commit": "31482f4",
+      "title": "Implement and test slash commands, and do some more research",
+      "commit": "082ea11",
       "slug": "9",
-      "commitMessage": "Implement and test slash commands",
+      "commitMessage": "Implement and test slash commands, and do some more research",
+      "hasOutput": false
+    },
+    {
+      "id": "10",
+      "title": "Adding session logging",
+      "commit": "ff4f0d6",
+      "slug": "10",
+      "commitMessage": "Adding session logging",
+      "hasOutput": false
+    },
+    {
+      "id": "11",
+      "title": "Adding session management tools",
+      "commit": "8c8823c",
+      "slug": "11",
+      "commitMessage": "Adding session management tools",
+      "hasOutput": false
+    },
+    {
+      "id": "12",
+      "title": "Update model selection in topic finder",
+      "commit": "6cd9099",
+      "slug": "12",
+      "commitMessage": "Update model selection in topic finder",
       "hasOutput": false
     }
   ]

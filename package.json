@@ -7,7 +7,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "gen:data": "npx tsx scripts/sync-data.ts"
+    "gen:data": "npx tsx scripts/sync-data.ts",
+    "build-site": "npx tsx scripts/build-site.ts"
   },
   "dependencies": {
     "@astrojs/react": "^4.4.2",

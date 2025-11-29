@@ -14,7 +14,7 @@ interface WorkspaceProps {
 }
 
 export default function Workspace({ files, prevFiles = [], changedFiles = [], initialFile, terminalOutput }: WorkspaceProps) {
-    const hiddenFiles = ['OUTPUT.txt', 'STEPS.md'];
+    const hiddenFiles = ['OUTPUT.txt', 'OUTPUT.md', 'STEP.md', 'STEPS.md', 'README.md'];
 
     // Filter out hidden files from changedFiles and files for selection logic
     const visibleChangedFiles = useMemo(() => changedFiles.filter(f => !hiddenFiles.includes(f)), [changedFiles]);

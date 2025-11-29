@@ -1,11 +1,14 @@
 ---
 import '../styles/global.css';
+import { getProject } from '../utils/project';
+
+const project = getProject();
 
 interface Props {
 	title?: string;
 }
 
-const { title = "Future Systems Report" } = Astro.props;
+const { title = `${project.title} | TheFocus.AI Labs` } = Astro.props;
 ---
 
 <!doctype html>
@@ -13,7 +16,7 @@ const { title = "Future Systems Report" } = Astro.props;
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" type="image/svg+xml" href={`${import.meta.env.BASE_URL}favicon.svg`} />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
         <link rel="preconnect" href="https://fonts.googleapis.com">

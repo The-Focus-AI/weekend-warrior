@@ -42,10 +42,11 @@ export async function getStaticPaths() {
 }
 
 const { step, files, prevFiles, changedFiles, terminalOutput, prevStep, nextStep, index } = Astro.props;
+const base = import.meta.env.BASE_URL;
 const contentHtml = marked.parse(step.content);
 ---
 
-<Layout title={`${step.title} | Future Systems Report`}>
+<Layout title={`${step.title} | TheFocus.AI Labs`}>
   <Header slot="header" />
   <div class="grid grid-cols-1 lg:grid-cols-12 h-full overflow-hidden bg-paper">
     {/* Left Panel: Tutorial */}
@@ -64,13 +65,13 @@ const contentHtml = marked.parse(step.content);
       {/* Navigation Footer */}
       <div class="sticky bottom-0 bg-paper border-t border-void p-6 flex justify-between items-center z-10">
         {prevStep ? (
-            <a href={`/steps/${prevStep.slug}`} class="font-mono font-bold text-xs text-void uppercase tracking-widest hover:text-rand-blue transition-colors flex items-center gap-2">
+            <a href={`${base}steps/${prevStep.slug}`} class="font-mono font-bold text-xs text-void uppercase tracking-widest hover:text-rand-blue transition-colors flex items-center gap-2">
                 &larr; PREV
             </a>
         ) : <div></div>}
-        
+
         {nextStep ? (
-            <a href={`/steps/${nextStep.slug}`} class="font-mono font-bold text-xs text-void uppercase tracking-widest hover:text-rand-blue transition-colors flex items-center gap-2">
+            <a href={`${base}steps/${nextStep.slug}`} class="font-mono font-bold text-xs text-void uppercase tracking-widest hover:text-rand-blue transition-colors flex items-center gap-2">
                 NEXT &rarr;
             </a>
         ) : (
