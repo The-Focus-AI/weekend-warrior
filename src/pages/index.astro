@@ -1,0 +1,77 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import { getSteps } from '../utils/steps';
+import { getEntry } from 'astro:content';
+
+const readme = await getEntry('docs', 'readme');
+const { Content } = await readme.render();
+const steps = getSteps();
+---
+
+<Layout>
+  <Header slot="header" />
+  
+  <div class="grid grid-cols-1 lg:grid-cols-2 h-full overflow-hidden">
+    
+    {/* Left Panel: Report Cover */}
+    <div class="col-span-1 bg-paper flex flex-col p-12 lg:p-20 overflow-y-auto border-r border-void relative">
+      <div class="max-w-xl">
+        <div class="font-mono text-xs space-y-1 mb-12 text-void">
+            <p class="font-bold">PROJECT: Weekend Coding Warrior</p>
+            <p>DOC. NO: WC-2025-HZ</p>
+            <p>DATE: {new Date().toISOString().split('T')[0]}</p>
+        </div>
+
+        <h1 class="text-6xl md:text-8xl font-sans font-black text-void leading-[0.85] tracking-tight mb-12">
+          FUTURE<br/>
+          SYSTEMS<br/>
+          <span class="text-rand-blue">REPORT</span>
+        </h1>
+
+        <div class="border-l-4 border-alert-red pl-6 py-2 mb-12">
+            <p class="font-sans font-medium text-lg leading-snug text-void">
+                A comprehensive technical manual for building software tools with AI. 
+                Follow the steps to master the workflow.
+            </p>
+        </div>
+
+        <div class="prose prose-lg prose-void">
+            <Content />
+        </div>
+      </div>
+    </div>
+
+    {/* Right Panel: Table of Contents */}
+    <div class="col-span-1 bg-surface overflow-y-auto p-12 lg:p-20 border-l border-void">
+      <div class="max-w-xl mx-auto">
+        <div class="border-b-2 border-void pb-6 mb-12 flex justify-between items-end">
+            <h2 class="text-3xl font-black text-void uppercase tracking-tight">Index of Operations</h2>
+            <span class="font-mono text-xs font-bold text-void">TOTAL STEPS: {steps.length.toString().padStart(2, '0')}</span>
+        </div>
+
+        <div class="space-y-4">
+            {steps.map((step, index) => (
+                <a href={`/steps/${step.slug}`} class="group block bg-paper border border-void p-6 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)] transition-all">
+                    <div class="flex items-baseline gap-4 mb-2">
+                        <span class="text-alert-red font-mono text-xs font-bold">{(index).toString().padStart(2, '0')}</span>
+                        <h3 class="font-bold text-void text-lg group-hover:text-rand-blue transition-colors uppercase tracking-tight">{step.title}</h3>
+                    </div>
+                    <div class="pl-8 font-mono text-xs text-void/60 flex justify-between">
+                        <span>COMMIT: {step.commit.substring(0, 7)}</span>
+                        <span class="group-hover:translate-x-1 transition-transform">ACCESS &rarr;</span>
+                    </div>
+                </a>
+            ))}
+        </div>
+
+        <div class="mt-12 pt-12 border-t border-dashed border-void/30">
+            <a href={`/steps/${steps[0].slug}`} class="block w-full bg-rand-blue text-white font-mono font-bold text-center py-4 uppercase tracking-widest hover:bg-opacity-90 transition-opacity">
+                Initialize Sequence
+            </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</Layout>

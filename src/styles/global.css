@@ -1,0 +1,82 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  --font-sans: "Inter", "Helvetica Neue", "Arial", sans-serif;
+  --font-mono: "Courier Prime", "Courier New", monospace;
+
+  --color-paper: #f3f2ea;
+  --color-void: #1a1a1a;
+  --color-rand-blue: #0055aa;
+  --color-alert-red: #d93025;
+  --color-surface: #e6e4dc;
+  --color-terminal-green: #00ff41;
+
+  --shadow-card: 10px 10px 0px 0px rgba(0, 0, 0, 0.1);
+}
+
+@layer base {
+  body {
+    @apply bg-paper text-void font-sans antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-black tracking-tight text-void;
+  }
+
+  code,
+  pre {
+    @apply font-mono;
+  }
+
+  /* Prose overrides */
+  .prose {
+    @apply text-void max-w-none;
+  }
+
+  .prose h1 {
+    @apply text-4xl md:text-5xl font-black mb-8 leading-tight tracking-tight;
+  }
+
+  .prose h2 {
+    @apply text-3xl font-black mt-12 mb-6 uppercase tracking-tight;
+  }
+
+  .prose h3 {
+    @apply text-xl font-bold mt-8 mb-4;
+  }
+
+  .prose p {
+    @apply leading-relaxed mb-6 text-base font-normal;
+  }
+
+  .prose a {
+    @apply text-rand-blue font-bold no-underline hover:underline decoration-2 underline-offset-4;
+  }
+
+  .prose blockquote {
+    @apply border-l-4 border-alert-red bg-surface p-6 not-italic font-medium my-8;
+  }
+
+  .prose code {
+    @apply bg-surface px-1.5 py-0.5 rounded-sm text-sm font-bold text-void font-mono;
+  }
+
+  .prose pre {
+    @apply bg-void text-paper p-6 rounded-none overflow-x-auto my-8 border border-void;
+    box-shadow: 10px 10px 0px 0px rgba(0, 0, 0, 0.1);
+  }
+
+  .prose ul {
+    @apply list-disc pl-6 mb-6 marker:text-alert-red;
+  }
+
+  .prose ol {
+    @apply list-decimal pl-6 mb-6 marker:text-alert-red marker:font-mono marker:font-bold;
+  }
+}

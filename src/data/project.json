@@ -1,0 +1,86 @@
+{
+  "title": "Weekend Coding Agent",
+  "repoPath": "../../weekend-coding-agent",
+  "steps": [
+    {
+      "id": "0",
+      "title": "Project Setup",
+      "commit": "5d06182",
+      "slug": "0",
+      "commitMessage": "Project Setup",
+      "hasOutput": false
+    },
+    {
+      "id": "1",
+      "title": "Research agent prompt",
+      "commit": "b934c99",
+      "slug": "1",
+      "commitMessage": "Research agent prompt",
+      "hasOutput": false
+    },
+    {
+      "id": "2",
+      "title": "Research setting up TypeScript project",
+      "commit": "a61c746",
+      "slug": "2",
+      "commitMessage": "Research setting up TypeScript project",
+      "hasOutput": false
+    },
+    {
+      "id": "3",
+      "title": "Reseaching using Gemini API",
+      "commit": "78aadc9",
+      "slug": "3",
+      "commitMessage": "Reseaching using Gemini API",
+      "hasOutput": false
+    },
+    {
+      "id": "4",
+      "title": "Research searching the web",
+      "commit": "e1158c1",
+      "slug": "4",
+      "commitMessage": "Research searching the web",
+      "hasOutput": false
+    },
+    {
+      "id": "5",
+      "title": "Make the plan",
+      "commit": "5ad53a2",
+      "slug": "5",
+      "commitMessage": "Make the plan",
+      "hasOutput": false
+    },
+    {
+      "id": "6",
+      "title": "Execute the plan",
+      "commit": "c71cb0e",
+      "slug": "6",
+      "commitMessage": "Execute the plan",
+      "hasOutput": false
+    },
+    {
+      "id": "7",
+      "title": "More debugging",
+      "commit": "81e6fbe",
+      "slug": "7",
+      "commitMessage": "More debugging",
+      "hasOutput": false
+    },
+    {
+      "id": "8",
+      "title": "Self updating with some more knowledge",
+      "commit": "16d7c5e",
+      "slug": "8",
+      "commitMessage": "Self updating with some more knowledge",
+      "hasOutput": false
+    },
+    {
+      "id": "9",
+      "title": "Implement and test slash commands",
+      "commit": "31482f4",
+      "slug": "9",
+      "commitMessage": "Implement and test slash commands",
+      "hasOutput": false
+    }
+  ]
+}

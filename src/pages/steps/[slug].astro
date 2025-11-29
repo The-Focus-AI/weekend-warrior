@@ -1,0 +1,95 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Workspace from '../../components/Workspace';
+import Header from '../../components/Header.astro';
+import { getCommitFiles, getChangedFiles } from '../../utils/git';
+import { getSteps } from '../../utils/steps';
+import { marked } from 'marked';
+import fs from 'fs';
+import path from 'path';
+
+export async function getStaticPaths() {
+  const steps = getSteps();
+  
+  return steps.map((step, index) => {
+    const files = getCommitFiles(step.commit);
+    
+    // Get previous step data for diffs
+    let prevFiles: any[] = [];
+    let changedFiles: string[] = [];
+    
+    if (index > 0) {
+        const prevStep = steps[index - 1];
+        prevFiles = getCommitFiles(prevStep.commit);
+        changedFiles = getChangedFiles(step.commit);
+    } else {
+        // For the first step, everything is "changed" (new)
+        changedFiles = files.map(f => f.path);
+    }
+
+    // Read terminal output from OUTPUT.txt if it exists in the commit
+    let terminalOutput = '';
+    const outputNode = files.find(f => f.path === 'OUTPUT.txt');
+    if (outputNode && outputNode.content) {
+        terminalOutput = outputNode.content;
+    }
+    
+    return {
+        params: { slug: step.slug },
+        props: { step, files, prevFiles, changedFiles, terminalOutput, prevStep: steps[index - 1], nextStep: steps[index + 1], index },
+    };
+  });
+}
+
+const { step, files, prevFiles, changedFiles, terminalOutput, prevStep, nextStep, index } = Astro.props;
+const contentHtml = marked.parse(step.content);
+---
+
+<Layout title={`${step.title} | Future Systems Report`}>
+  <Header slot="header" />
+  <div class="grid grid-cols-1 lg:grid-cols-12 h-full overflow-hidden bg-paper">
+    {/* Left Panel: Tutorial */}
+    <div class="col-span-1 lg:col-span-5 overflow-y-auto flex flex-col bg-paper border-r border-void z-10 relative">
+      <div class="p-8 lg:p-12 flex-1 max-w-3xl mx-auto w-full">
+        <div class="mb-12 pb-6 border-b border-void flex justify-between items-start">
+            <div>
+                <span class="block text-xs font-mono font-bold text-alert-red mb-2">SECTION {(index + 1).toString().padStart(2, '0')}</span>
+                <h1 class="text-3xl font-black text-void uppercase tracking-tight leading-tight">{step.title}</h1>
+            </div>
+        </div>
+        
+        <div class="prose prose-void prose-lg" set:html={contentHtml} />
+      </div>
+      
+      {/* Navigation Footer */}
+      <div class="sticky bottom-0 bg-paper border-t border-void p-6 flex justify-between items-center z-10">
+        {prevStep ? (
+            <a href={`/steps/${prevStep.slug}`} class="font-mono font-bold text-xs text-void uppercase tracking-widest hover:text-rand-blue transition-colors flex items-center gap-2">
+                &larr; PREV
+            </a>
+        ) : <div></div>}
+        
+        {nextStep ? (
+            <a href={`/steps/${nextStep.slug}`} class="font-mono font-bold text-xs text-void uppercase tracking-widest hover:text-rand-blue transition-colors flex items-center gap-2">
+                NEXT &rarr;
+            </a>
+        ) : (
+            <span class="text-void/40 font-mono font-bold uppercase tracking-widest text-xs">END OF REPORT</span>
+        )}
+      </div>
+    </div>
+
+    {/* Right Panel: Workspace */}
+    <div class="col-span-1 lg:col-span-7 h-full overflow-hidden bg-surface p-6 flex flex-col">
+      <div class="flex-1 border border-void shadow-[10px_10px_0px_0px_rgba(0,0,0,0.1)] overflow-hidden bg-paper">
+          <Workspace 
+            client:load 
+            files={files} 
+            prevFiles={prevFiles} 
+            changedFiles={changedFiles} 
+            terminalOutput={terminalOutput}
+          />
+      </div>
+    </div>
+  </div>
+</Layout>
