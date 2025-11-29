@@ -12,6 +12,14 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
+src/content/steps/
+!src/content/steps/.gitkeep
+
+src/content/docs/
+!src/content/docs/.gitkeep
+
+src/data/project.json
+!src/data/project.json.gitkeep
 
 # environment variables
 .env
