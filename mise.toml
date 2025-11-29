@@ -2,11 +2,17 @@
 node = "latest"
 "npm:@anthropic-ai/claude-code" = "latest"
 
+[tasks.install]
+description = "Install npm dependencies"
+run = "npm install"
+
 [tasks.build-site]
+depends = ["install"]
 description = "Build site from a git repo with optional base path"
 usage = '''
 arg "<git_path>" help="Git repository URL or local path"
-arg "[base]" help="Base directory prefix for the site (e.g., /my-project/)" default="/"
+arg "<base>" help="Base directory prefix for the site (e.g., /my-project/)" default="/"
+arg "<outdir>" help="Output directory to copy built files to"
 '''
 run = """
 #!/usr/bin/env bash
@@ -16,4 +22,7 @@ if [ -n "$usage_base" ] && [ "$usage_base" != "/" ]; then
 else
   npx tsx scripts/build-site.ts "$usage_git_path"
 fi
+echo "Copying site to $usage_outdir"
+mkdir -p "$usage_outdir"
+cp -r dist/* "$usage_outdir"
 """
