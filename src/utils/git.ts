@@ -1,8 +1,9 @@
 import { execSync } from 'child_process';
 import path from 'path';
 import fs from 'fs';
+import projectData from '../data/project.json';
 
-const REPO_PATH = path.resolve('../weekend-coding-agent');
+const REPO_PATH = projectData.repoPath;
 
 export interface FileNode {
     path: string;

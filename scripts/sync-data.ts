@@ -17,6 +17,20 @@ const DATA_FILE = path.join(SITE_DIR, 'src/data/project.json');
 
 console.log(`Source repo: ${SOURCE_REPO}`);
 
+// Clear Astro cache to force content re-sync
+const ASTRO_CACHE = path.join(SITE_DIR, '.astro');
+if (fs.existsSync(ASTRO_CACHE)) {
+    console.log('Clearing Astro cache...');
+    fs.rmSync(ASTRO_CACHE, { recursive: true, force: true });
+}
+
+// Clear dist folder to ensure clean build
+const DIST_DIR = path.join(SITE_DIR, 'dist');
+if (fs.existsSync(DIST_DIR)) {
+    console.log('Clearing dist folder...');
+    fs.rmSync(DIST_DIR, { recursive: true, force: true });
+}
+
 // Ensure directories exist
 const DOCS_DIR = path.join(SITE_DIR, 'src/content/docs');
 if (fs.existsSync(STEPS_DIR)) {
@@ -80,7 +94,19 @@ const commits = logOutput.split('\n').filter(Boolean).map(line => {
     return { hash, message: msgParts.join(' ') };
 });
 
-// 3. Map commits to steps
+// 3. Try to read STEPS.md (multi-section file) from the latest commit
+// STEPS.md has sections separated by --- where each section maps to a commit
+let stepsSections: string[] = [];
+try {
+    const stepsContent = execSync(`git show HEAD:STEPS.md`, { cwd: SOURCE_REPO, encoding: 'utf-8', stdio: ['pipe', 'pipe', 'ignore'] });
+    // Split by --- on its own line (horizontal rule separator)
+    stepsSections = stepsContent.split(/\n---+\n/).map(s => s.trim()).filter(Boolean);
+    console.log(`Found STEPS.md with ${stepsSections.length} sections`);
+} catch (e) {
+    console.log('No STEPS.md found, will try STEP.md per commit');
+}
+
+// 4. Map commits to steps
 const steps = commits.map((commit, index) => {
     const id = index.toString();
     const destStepFile = path.join(STEPS_DIR, `${id}.md`);
@@ -90,17 +116,23 @@ const steps = commits.map((commit, index) => {
     let outputContent = '';
     let title = commit.message;
 
-    // Try to get STEP.md
-    try {
-        stepContent = execSync(`git show ${commit.hash}:STEP.md`, { cwd: SOURCE_REPO, encoding: 'utf-8', stdio: ['pipe', 'pipe', 'ignore'] });
-        // Try to extract title from first line if it's a header
-        const match = stepContent.match(/^#\s+(.+)$/m);
-        if (match) {
-            title = match[1];
+    // If we have STEPS.md sections, use them (1:1 mapping with commits)
+    if (stepsSections.length > 0 && index < stepsSections.length) {
+        stepContent = stepsSections[index];
+    } else {
+        // Fallback: try to get STEP.md from this specific commit
+        try {
+            stepContent = execSync(`git show ${commit.hash}:STEP.md`, { cwd: SOURCE_REPO, encoding: 'utf-8', stdio: ['pipe', 'pipe', 'ignore'] });
+        } catch (e) {
+            // Neither file exists
+            stepContent = `# ${commit.message}\n\n*No STEP.md or STEPS.md found for this commit.*`;
         }
-    } catch (e) {
-        // Fallback if STEP.md doesn't exist
-        stepContent = `# ${commit.message}\n\n*No STEP.md found for this commit.*`;
+    }
+
+    // Try to extract title from first line if it's a header
+    const titleMatch = stepContent.match(/^#\s+(.+)$/m);
+    if (titleMatch) {
+        title = titleMatch[1];
     }
 
     // Try to get OUTPUT.md
