@@ -4,58 +4,70 @@ This project generates a "Future Systems Report" style tutorial from a Git repos
 
 ## Prerequisites
 
-- **Node.js**: v18 or higher.
-- **Git**: Installed and configured.
-- **Source Repository**: The git repository you want to turn into a tutorial.
+- **Node.js**: v18 or higher
+- **Git**: Installed and configured
+- **Source Repository**: A git repository you want to turn into a tutorial
 
-## Setup
+## Quick Start (with mise)
 
-1.  **Clone this repository**:
-    ```bash
-    git clone <this-repo-url> site
-    cd site
-    ```
-
-2.  **Install Dependencies**:
-    ```bash
-    npm install
-    ```
-
-3.  **Link Source Repository**:
-    The site expects the source repository to be at `../weekend-coding-agent`. You can create a symlink if your repo is elsewhere:
-    
-    ```bash
-    # From the parent directory of 'site'
-    cd ..
-    ln -s /path/to/your/repo weekend-coding-agent
-    ```
-    
-    *Alternatively, you can modify `scripts/sync-data.ts` to point to a different path.*
-
-## Running Locally
-
-To start the development server:
+The easiest way to build a site is using [mise](https://mise.jdx.dev/):
 
 ```bash
+# Build a site from a git repo (local or remote)
+mise run build-site <git-path> <base-path> <output-dir>
+
+# Examples:
+mise run build-site ../my-project / ./output
+mise run build-site https://github.com/user/repo.git /repo/ ./dist/repo
+mise run build-site git@github.com:user/repo.git /my-site/ ./public
+```
+
+Arguments:
+- `<git-path>` - Git repository URL or local path
+- `<base-path>` - URL base path for the site (use `/` for root, `/project/` for subdirectory)
+- `<output-dir>` - Directory to copy the built files to
+
+## Manual Build
+
+If you prefer not to use mise:
+
+```bash
+# Install dependencies
+npm install
+
+# Build site from a repository
+npx tsx scripts/build-site.ts <git-path> [--base <base-path>]
+
+# Examples:
+npx tsx scripts/build-site.ts ../my-project
+npx tsx scripts/build-site.ts https://github.com/user/repo.git --base /repo/
+```
+
+The output will be in the `dist/` directory.
+
+## Development
+
+To work on the site generator itself:
+
+```bash
+npm install
+
+# Sync data from a source repo (defaults to ../weekend-coding-agent)
+npm run gen:data
+# Or specify a repo:
+npx tsx scripts/sync-data.ts /path/to/repo
+
+# Start the dev server
 npm run dev
 ```
 
-This command will:
-1.  Run `scripts/sync-data.ts` to read your git history and generate content.
-2.  Start the Astro dev server at `http://localhost:4321`.
+The dev server runs at `http://localhost:4321`.
 
 ## Building for Production
 
-To build the static site:
-
 ```bash
 npm run build
-```
-
-The output will be in the `dist/` directory. You can preview the build with:
-
-```bash
-npm run preview
+npm run preview  # Preview the built site
 ```
 
 ## Authoring

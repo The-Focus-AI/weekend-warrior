@@ -9,7 +9,7 @@ import fs from 'fs';
 import path from 'path';
 
 export async function getStaticPaths() {
-  const steps = getSteps();
+  const steps = await getSteps();
   
   return steps.map((step, index) => {
     const files = getCommitFiles(step.commit);
