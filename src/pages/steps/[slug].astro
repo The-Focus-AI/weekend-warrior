@@ -4,20 +4,25 @@ import Workspace from '../../components/Workspace';
 import Header from '../../components/Header.astro';
 import { getCommitFiles, getChangedFiles } from '../../utils/git';
 import { getSteps } from '../../utils/steps';
+import { getEntry } from 'astro:content';
 import { marked } from 'marked';
 import fs from 'fs';
 import path from 'path';
 
 export async function getStaticPaths() {
   const steps = await getSteps();
-  
+
+  // Check if epilog exists
+  const epilog = await getEntry('docs', 'epilog');
+  const hasEpilog = !!epilog;
+
   return steps.map((step, index) => {
     const files = getCommitFiles(step.commit);
-    
+
     // Get previous step data for diffs
     let prevFiles: any[] = [];
     let changedFiles: string[] = [];
-    
+
     if (index > 0) {
         const prevStep = steps[index - 1];
         prevFiles = getCommitFiles(prevStep.commit);
@@ -33,15 +38,15 @@ export async function getStaticPaths() {
     if (outputNode && outputNode.content) {
         terminalOutput = outputNode.content;
     }
-    
+
     return {
         params: { slug: step.slug },
-        props: { step, files, prevFiles, changedFiles, terminalOutput, prevStep: steps[index - 1], nextStep: steps[index + 1], index },
+        props: { step, files, prevFiles, changedFiles, terminalOutput, prevStep: steps[index - 1], nextStep: steps[index + 1], index, hasEpilog },
     };
   });
 }
 
-const { step, files, prevFiles, changedFiles, terminalOutput, prevStep, nextStep, index } = Astro.props;
+const { step, files, prevFiles, changedFiles, terminalOutput, prevStep, nextStep, index, hasEpilog } = Astro.props;
 const base = import.meta.env.BASE_URL;
 const contentHtml = marked.parse(step.content);
 ---
@@ -73,6 +78,10 @@ const contentHtml = marked.parse(step.content);
         {nextStep ? (
             <a href={`${base}steps/${nextStep.slug}`} class="font-mono font-bold text-xs text-void uppercase tracking-widest hover:text-rand-blue transition-colors flex items-center gap-2">
                 NEXT &rarr;
+            </a>
+        ) : hasEpilog ? (
+            <a href={`${base}epilog`} class="font-mono font-bold text-xs text-void uppercase tracking-widest hover:text-rand-blue transition-colors flex items-center gap-2">
+                CONTINUE &rarr;
             </a>
         ) : (
             <span class="text-void/40 font-mono font-bold uppercase tracking-widest text-xs">END OF REPORT</span>

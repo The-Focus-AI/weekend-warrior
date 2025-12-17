@@ -17,6 +17,10 @@ const titleLines = getTitleLines(title);
 // Get README content (frontmatter already stripped by sync-data.ts)
 const readme = await getEntry('docs', 'readme');
 const readmeContent = readme ? await readme.render() : null;
+
+// Check if epilog exists
+const epilog = await getEntry('docs', 'epilog');
+const hasEpilog = !!epilog;
 ---
 
 <Layout title={`${title} | TheFocus.AI Labs`}>
@@ -73,6 +77,19 @@ const readmeContent = readme ? await readme.render() : null;
                     </div>
                 </a>
             ))}
+
+            {hasEpilog && (
+                <a href={`${base}epilog`} class="group block bg-paper border-2 border-rand-blue p-6 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)] transition-all">
+                    <div class="flex items-baseline gap-4 mb-2">
+                        <span class="text-rand-blue font-mono text-xs font-bold">++</span>
+                        <h3 class="font-bold text-void text-lg group-hover:text-rand-blue transition-colors uppercase tracking-tight">Continue Your Journey</h3>
+                    </div>
+                    <div class="pl-8 font-mono text-xs text-void/60 flex justify-between">
+                        <span>EPILOG</span>
+                        <span class="group-hover:translate-x-1 transition-transform">ACCESS &rarr;</span>
+                    </div>
+                </a>
+            )}
         </div>
 
         <div class="mt-12 pt-12 border-t border-dashed border-void/30">

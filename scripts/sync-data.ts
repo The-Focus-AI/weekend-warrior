@@ -42,6 +42,17 @@ if (!fs.existsSync(DOCS_DIR)) {
     fs.mkdirSync(DOCS_DIR, { recursive: true });
 }
 
+// Helper to transform relative image paths to absolute paths for Astro
+function transformImagePaths(content: string): string {
+    // Transform markdown image syntax to absolute paths:
+    // ![alt](images/...) -> ![alt](/images/...)
+    // ![alt](./images/...) -> ![alt](/images/...)
+    return content
+        .replace(/!\[([^\]]*)\]\((?:\.\/)?images\/([^)]+)\)/g, '![$1](/images/$2)')
+        // Also handle HTML img tags
+        .replace(/src=["'](?:\.\/)?images\//g, 'src="/images/');
+}
+
 // 1. Read README.md, parse frontmatter, and save content without frontmatter
 interface ProjectConfig {
     title?: string;
@@ -80,10 +91,43 @@ if (fs.existsSync(readmePath)) {
     // Remove first H1 heading (we show title in hero already)
     readmeBody = readmeBody.replace(/^#\s+.+\n+/, '');
 
-    // Write README WITHOUT frontmatter and first H1
-    fs.writeFileSync(path.join(DOCS_DIR, 'readme.md'), readmeBody);
+    // Write README WITHOUT frontmatter and first H1 (transform image paths)
+    fs.writeFileSync(path.join(DOCS_DIR, 'readme.md'), transformImagePaths(readmeBody));
 } else {
     console.warn('README.md not found in source repo.');
+}
+
+// 1b. Copy EPILOG.md if it exists
+console.log('Checking for EPILOG.md...');
+const epilogPath = path.join(SOURCE_REPO, 'EPILOG.md');
+if (fs.existsSync(epilogPath)) {
+    let epilogContent = fs.readFileSync(epilogPath, 'utf-8');
+    fs.writeFileSync(path.join(DOCS_DIR, 'epilog.md'), transformImagePaths(epilogContent));
+    console.log('Copied EPILOG.md');
+} else {
+    // Remove epilog.md if it exists from a previous sync
+    const destEpilog = path.join(DOCS_DIR, 'epilog.md');
+    if (fs.existsSync(destEpilog)) {
+        fs.unlinkSync(destEpilog);
+    }
+    console.log('No EPILOG.md found');
+}
+
+// 1c. Copy images directory if it exists
+console.log('Checking for images...');
+const imagesPath = path.join(SOURCE_REPO, 'images');
+const publicImagesPath = path.join(SITE_DIR, 'public/images');
+if (fs.existsSync(imagesPath)) {
+    // Clear existing images
+    if (fs.existsSync(publicImagesPath)) {
+        fs.rmSync(publicImagesPath, { recursive: true, force: true });
+    }
+    // Copy images directory recursively
+    fs.cpSync(imagesPath, publicImagesPath, { recursive: true });
+    const imageFiles = fs.readdirSync(publicImagesPath);
+    console.log(`Copied ${imageFiles.length} files from images/`);
+} else {
+    console.log('No images/ directory found');
 }
 
 // 2. Get git log
@@ -142,14 +186,14 @@ const steps = commits.map((commit, index) => {
         outputContent = '';
     }
 
-    // Write step file
+    // Write step file (transform image paths for Astro)
     const fileContent = `---
 title: "${title.replace(/"/g, '\\"')}"
 commit: "${commit.hash}"
 slug: "${id}"
 ---
 
-${stepContent}
+${transformImagePaths(stepContent)}
 `;
     fs.writeFileSync(destStepFile, fileContent);
 
