@@ -1,0 +1,40 @@
+---
+// Newsletter signup form for page footer
+---
+
+<div class="newsletter-signup w-full bg-void text-white py-12 px-4 mt-20 print:hidden">
+  <div class="max-w-2xl mx-auto text-center">
+    <span class="font-mono text-xs uppercase tracking-widest text-gray-400 block mb-2">Stay Updated</span>
+    <h3 class="font-sans font-black text-2xl md:text-3xl uppercase mb-4">
+      Get More Weekend Projects
+    </h3>
+    <p class="font-mono text-sm text-gray-300 mb-8 max-w-lg mx-auto">
+      Join the Focus.AI newsletter for hands-on tutorials, research, and perspectives on building with AI.
+    </p>
+
+    <form
+      action="https://buttondown.com/api/emails/embed-subscribe/thefocusai"
+      method="post"
+      class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto"
+    >
+      <input
+        type="email"
+        name="email"
+        id="bd-email-footer"
+        placeholder="your@email.com"
+        required
+        class="flex-1 px-4 py-3 bg-white text-void font-mono text-sm border-2 border-white focus:border-rand-blue focus:outline-none"
+      />
+      <button
+        type="submit"
+        class="px-6 py-3 bg-rand-blue text-white font-mono font-bold text-sm uppercase tracking-wider border-2 border-rand-blue hover:bg-white hover:text-rand-blue transition-colors"
+      >
+        Subscribe
+      </button>
+    </form>
+
+    <p class="font-mono text-[10px] text-gray-500 mt-4">
+      No spam. Unsubscribe anytime.
+    </p>
+  </div>
+</div>

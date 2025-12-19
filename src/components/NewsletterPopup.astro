@@ -1,0 +1,116 @@
+---
+// Newsletter popup that appears after 30 seconds, dismissible via localStorage
+---
+
+<div id="newsletter-popup" class="fixed inset-0 z-50 hidden print:hidden">
+  <!-- Backdrop -->
+  <div class="absolute inset-0 bg-void/70 backdrop-blur-sm" id="popup-backdrop"></div>
+
+  <!-- Modal -->
+  <div class="absolute inset-0 flex items-center justify-center p-4">
+    <div class="relative bg-paper border-4 border-void shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] max-w-md w-full p-8 animate-in fade-in zoom-in-95 duration-300">
+      <!-- Close button -->
+      <button
+        id="popup-close"
+        class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center text-void hover:text-alert-red transition-colors font-mono font-bold text-xl"
+        aria-label="Close popup"
+      >
+        &times;
+      </button>
+
+      <div class="text-center">
+        <span class="font-mono text-xs uppercase tracking-widest text-gray-500 block mb-2">
+          Build More With AI
+        </span>
+        <h3 class="font-sans font-black text-2xl uppercase mb-4 text-void">
+          Get Weekend Projects
+        </h3>
+        <p class="font-mono text-sm text-gray-600 mb-6">
+          Join for hands-on tutorials, research summaries, and expert analysis on building with AI.
+        </p>
+
+        <form
+          action="https://buttondown.com/api/emails/embed-subscribe/thefocusai"
+          method="post"
+          class="space-y-3"
+        >
+          <input
+            type="email"
+            name="email"
+            id="bd-email-popup"
+            placeholder="your@email.com"
+            required
+            class="w-full px-4 py-3 bg-white text-void font-mono text-sm border-2 border-void focus:border-rand-blue focus:outline-none"
+          />
+          <button
+            type="submit"
+            class="w-full px-6 py-3 bg-void text-white font-mono font-bold text-sm uppercase tracking-wider border-2 border-void hover:bg-rand-blue hover:border-rand-blue transition-colors"
+          >
+            Subscribe to Focus.AI
+          </button>
+        </form>
+
+        <button
+          id="popup-dismiss"
+          class="mt-4 font-mono text-xs text-gray-400 hover:text-void transition-colors underline"
+        >
+          No thanks, I'll pass
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const STORAGE_KEY = 'focus_newsletter_dismissed';
+  const POPUP_DELAY = 30000; // 30 seconds
+
+  function initPopup() {
+    const popup = document.getElementById('newsletter-popup');
+    const closeBtn = document.getElementById('popup-close');
+    const dismissBtn = document.getElementById('popup-dismiss');
+    const backdrop = document.getElementById('popup-backdrop');
+
+    if (!popup) return;
+
+    // Check if already dismissed
+    const isDismissed = localStorage.getItem(STORAGE_KEY);
+    if (isDismissed) return;
+
+    // Show popup after delay
+    const timeoutId = setTimeout(() => {
+      popup.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }, POPUP_DELAY);
+
+    function closePopup(remember: boolean = false) {
+      popup.classList.add('hidden');
+      document.body.style.overflow = '';
+      if (remember) {
+        localStorage.setItem(STORAGE_KEY, 'true');
+      }
+    }
+
+    // Close handlers
+    closeBtn?.addEventListener('click', () => closePopup(true));
+    dismissBtn?.addEventListener('click', () => closePopup(true));
+    backdrop?.addEventListener('click', () => closePopup(false));
+
+    // Close on escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !popup.classList.contains('hidden')) {
+        closePopup(false);
+      }
+    });
+
+    // Clean up timeout if page is navigated away
+    window.addEventListener('beforeunload', () => clearTimeout(timeoutId));
+  }
+
+  // Initialize on page load
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initPopup);
+  } else {
+    initPopup();
+  }
+</script>

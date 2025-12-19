@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import { getProject } from '../utils/project';
+import NewsletterPopup from '../components/NewsletterPopup.astro';
 
 const project = getProject();
 
@@ -27,5 +28,6 @@ const { title = `${project.title} | TheFocus.AI Labs` } = Astro.props;
 	<body class="h-screen w-screen overflow-hidden bg-paper text-void font-sans flex flex-col antialiased selection:bg-rand-blue selection:text-white">
     <slot name="header" />
 		<slot />
+		<NewsletterPopup />
 	</body>
 </html>
